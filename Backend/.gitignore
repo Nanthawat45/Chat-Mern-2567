@@ -1,0 +1,34 @@
+# Node.js
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build directory
+/dist
+/build
+
+# Temporary files
+.vscode/
+.idea/
+
+# Ignore the database file if it's local and not needed to be tracked
+db.json
+
+# Coverage directory for code coverage reports
+coverage/
+
+# NPM package lock files (uncomment if needed)
+# package-lock.json
+# yarn.lock

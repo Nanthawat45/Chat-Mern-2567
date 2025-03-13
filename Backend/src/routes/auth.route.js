@@ -6,9 +6,9 @@ import { signOut } from '../controllers/auth.controller.js';
 import { updataProfile } from '../controllers/auth.controller.js';
 import { protectedRoute } from '../middleware/auth.middleware.js';
 
-router.post("/singUp", signUp);
-router.post("/signIn", signIn);
-router.post("/signOut", signOut);
+router.post("/signup", signUp);
+router.post("/signin", signIn);
+router.post("/signout", signOut);
 
 router.put("/update-profile", protectedRoute, updataProfile);
 

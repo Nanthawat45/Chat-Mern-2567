@@ -6,10 +6,8 @@ email: { type: String, required: true },
 fullname: { type: String, required: true },
   password: { type: String, required: true },
   profilePic: { type: String, default: "" },
-  friends: [{ type: Schema.Types.ObjectId, ref: 'User' 
-  }],
-  friendRequests: [{ type: Schema.Types.ObjectId, ref: 'User' 
-  }],
+  friends: [{ type: Schema.Types.ObjectId, ref: 'User'}],
+  friendRequests: [{ type: Schema.Types.ObjectId, ref: 'User'}],
 },{ 
     timestamps: true 
 });
