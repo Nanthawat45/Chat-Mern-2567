@@ -1,5 +1,3 @@
-// import React,{useState} from 'react'
-// import { useAuthStore } from '../store/useAuthstore'
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthstore";
 import {
@@ -24,7 +22,7 @@ const Signup = () => {
     password: "",
   });
 
-  const { signup, isSigningUp } = useAuthStore();
+  const { signUp, isSigningUp } = useAuthStore();
 
   const validateForm = () => {
     if (!formData.fullName.trim()) return toast.error("Full name is required");
@@ -43,7 +41,7 @@ const Signup = () => {
 
     const success = validateForm();
 
-    if (success === true) signup(formData);
+    if (success === true) signUp(formData);
   };
 
   return (
@@ -175,5 +173,4 @@ const Signup = () => {
     </div>
   );
 };
-
 export default Signup;

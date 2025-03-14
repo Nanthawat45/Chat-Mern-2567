@@ -1,5 +1,4 @@
 import { generateToken } from "../lib/utils.js";
-import User  from "../routes/auth.route.js";
 import bcrypt from "bcrypt";
 import cloudinary from "../lib/cloudinary.js";
 import UserModel from "../models/user.model.js";
@@ -49,61 +48,74 @@ export const signUp = async (req, res) => {
 };
 
 export const signIn = async (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ error: "All fields are required" });
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email or Password is missin" });
+  }
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    try {
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ error: "Invalid email" });
-      }
-      const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword) {
-        return res.status(400).json({ error: "Invalid password" });
-      }
-
-      generateToken(user._id, res);
-      res.status(200).json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        profilePic: user.profilePic,
-      });
-    } catch (error) {
-      return res.status(500).json({ error: "Internal server error" });
+    // Check password
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(400).json({ message: "Password is not matched!" });
     }
-  };
+    generateToken(user._id, res);
+    res.status(200).json({
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      profilePic: user.profilePic,
+    });
+  } catch (error) {
+    console.error("Signin Error: ", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
   
 export const signOut = async (req, res) => {
-    try {
-      res.clearCookie("token");
-      res.status(200).json({ message: "Logged out" });
-    } catch (error) {
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  };
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error While logging out " });
+  }
+};
+
 
 export const updataProfile = async (req, res)=>{
-   try {
+  try {
     const { profilePic } = req.body;
     const userId = req.user._id;
+    // const { id: userId } = req.params;
+
     if (!profilePic) {
-      return res.status(400).json({ error: "All fields are required" });
+      return res.status(400).json({ message: "Profile picture is required" });
     }
     const uploadResponse = await cloudinary.uploader.upload(profilePic);
-    const updatedUser = await User.findByIdAndUpdate(
+    if (!uploadResponse) {
+      res
+        .status(500)
+        .json({ message: "Error while uploading profile picture" });
+    }
+    const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { profilePic: uploadResponse.secure_url },
       { new: true }
     );
     if (updatedUser) {
-      return res.status(200).json(updatedUser);
+      res.status(200).json(updatedUser);
     } else {
-      return res.status(400).json({ error: "Invalid user data" });
+      res.status(500).json({ message: "Error while updating profile picture" });
     }
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    console.log(error);
+
+    res.status(500).json({ message: "Internal Server Error While updating " });
   }
 };
 

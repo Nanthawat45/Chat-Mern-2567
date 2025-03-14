@@ -13,7 +13,7 @@ import { Loader } from 'lucide-react';
 
 function App() {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
-  const theme = "dark";
+  const theme = useThemeStore();
   useEffect(() =>{
     checkAuth();
   },[checkAuth]);

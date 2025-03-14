@@ -5,9 +5,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
-
 const app = express();
 const server = http.createServer(app);
+console.log(process.env.FRONTEND_URL);
 
 const io = new Server(server, {
     cors: {
@@ -25,6 +25,7 @@ io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId;
     if (userId) {
         userSocketMap[userId] = socket.id;
+        console.log("UserSocketMap", userSocketMap);
     }
     io.emit("getOnlineUsers", Object.keys(userSocketMap))
 
